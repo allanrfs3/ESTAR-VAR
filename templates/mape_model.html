@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Hasil Evaluasi MAPE</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+    <h4>MAPE:</h4>
+    <h5>{{ mape }}%</h5>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <h4>Deskripsi Rentang Nilai MAPE</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Nilai Rentang MAPE</th>
+                    <th>Deskripsi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>< 10%</td>
+                    <td>Sangat Baik</td>
+                </tr>
+                <tr>
+                    <td>10% - 20%</td>
+                    <td>Baik</td>
+                </tr>
+                <tr>
+                    <td>20% - 50%</td>
+                    <td>Layak</td>
+                </tr>
+                <tr>
+                    <td>> 50%</td>
+                    <td>Buruk</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>Perbandingan Harga Aktual vs Prediksi:</h4>
+            <img src="{{ url_for('static', filename='actual_vs_predicted.png') }}" alt="Harga Aktual vs Prediksi" class="img-fluid">
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>Prediksi Harga Saham Menggunakan Model ESTAR:</h4>
+            <img src="{{ url_for('static', filename='forecast_prices.png') }}" alt="Prediksi Harga Saham" class="img-fluid">
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>Harga Saham Keseluruhan Data:</h4>
+            <img src="{{ url_for('static', filename='close_price_all.png') }}" alt="Harga Saham Keseluruhan Data" class="img-fluid">
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>Hasil Prediksi dan Data Aktual:</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Harga Aktual</th>
+                        <th>Harga Prediksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for index, row in result_df.iterrows() %}
+                        <tr>
+                            <td>{{ row.Date }}</td>
+                            <td>{{ row.Actual_Price }}</td>
+                            <td>{{ row.Forecast_Close_Price }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{{ url_for('var') }}" class="btn btn-success">Lanjut perhitungan risiko VaR</a>
+        <a href="{{ url_for('prediksi_estar_utk_var') }}" class="btn btn-info">Buat prediksi baru</a>
+    </div>
+</div>
+{% endblock %}

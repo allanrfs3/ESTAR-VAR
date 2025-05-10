@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Prediksi Harga Saham dengan Model ESTAR</h2>
+
+    <!-- Input untuk prediksi -->
+    <form method="POST" class="mb-4">
+        <div class="mb-3">
+            <label for="p" class="form-label">Masukkan nilai p:</label>
+            <input type="number" id="p" name="p" class="form-control" required>
+            <small class="form-text text-muted">
+                Nilai p menunjukkan jumlah lag yang digunakan dalam model AR.
+            </small>
+        </div>
+
+        <div class="mb-3">
+            <label for="d" class="form-label">Masukkan nilai d:</label>
+            <input type="number" id="d" name="d" class="form-control" required>
+            <small class="form-text text-muted">
+                Nilai d menunjukkan jumlah delay yang digunakan untuk variabel transisi model STAR dengan 1 ≤ d ≤ p.
+            </small>
+        </div>
+
+        <div class="mb-3">
+            <label for="steps" class="form-label">Jumlah Langkah (steps):</label>
+            <input type="number" id="steps" name="steps" class="form-control" required>
+            <small class="form-text text-muted">
+                Jumlah hari yang menjadi outsample pada saat splitting data.
+            </small>
+        </div>
+
+        <div class="mb-3">
+            <label for="last_price" class="form-label">Harga Saham Terakhir:</label>
+            <input type="number" id="last_price" name="last_price" class="form-control" step="any" required>
+            <small class="form-text text-muted">
+                Harga penutupan saham saat ini atau terakhir.
+            </small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Hitung Prediksi</button>
+    </form>
+
+    {% if predicted_returns is not none %}
+        <h4>Hasil Prediksi:</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Langkah (Step)</th>
+                    <th>Prediksi Return</th>
+                    <th>Harga Penutupan yang Diprediksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for step in range(predicted_returns|length) %}
+                    <tr>
+                        <td>{{ step + 1 }}</td>
+                        <td>{{ predicted_returns[step] }}</td>
+                        <td>{{ predicted_prices[step] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="mt-4">
+            <a href="{{ url_for('mape_model') }}" class="btn btn-primary">Lanjut evaluasi MAPE model ESTAR</a>
+        </div>
+    {% endif %}
+    
+
+</div>
+{% endblock %}

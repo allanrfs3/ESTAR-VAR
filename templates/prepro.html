@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Hasil Preprocessing Data</h2>
+    
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    {% if img_harga %}
+    <div class="card mb-4">
+        <div class="card-body text-center">
+            <img src="data:image/png;base64,{{ img_harga }}" alt="Grafik Harga" class="img-fluid" />
+        </div>
+    </div>
+    {% endif %}
+
+    {% if processed_data %}
+    <h2 class="text-center">Informasi Data</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <pre>{{ data_info }}</pre>
+            <h3>Jumlah Nilai Kosong:</h3>
+            <p>{{ null_counts.replace('\n', '; ') }}</p>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3>Jumlah Duplikasi:</h3>
+            <p>{{ duplicate_counts }}</p>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3>Statistik Deskriptif:</h3>
+            <pre>{{ data_description }}</pre>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3>5 Data Teratas:</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in top_5_data %}
+                    <tr>
+                        <td>{{ row.Date }}</td>
+                        <td>{{ row.Price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3>5 Data Terbawah:</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in bottom_5_data %}
+                    <tr>
+                        <td>{{ row.Date }}</td>
+                        <td>{{ row.Price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <form action="/return" method="post">
+        <input type="hidden" name="file_name" value="{{ file_name }}">
+        <button type="submit" class="btn btn-success mt-3">Lanjut ke Perhitungan Return</button>
+    </form>
+    {% else %}
+    <div class="alert alert-warning mt-3">Tidak ada data untuk ditampilkan.</div>
+    {% endif %}
+</div>
+{% endblock %}

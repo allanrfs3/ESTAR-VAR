@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Upload File</h2>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="fileInput" class="form-label">Pilih File (CSV)</label>
+            <input type="file" class="form-control" id="fileInput" name="file" accept=".csv" required>
+            <div class="form-text text-muted">
+                *Pastikan file CSV Anda memenuhi kriteria berikut:
+                <ul>
+                    <li>Format: CSV</li>
+                    <li>Kolom yang diperlukan: Tanggal, Harga Penutupan, Volume</li>
+                    <li>Data harus lengkap tanpa nilai yang hilang.</li>
+                </ul>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Unggah</button>
+    </form>
+
+    {% if error %}
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+    {% endif %}
+
+    {% if top_data %}
+    <h3>Hasil Upload:</h3>
+    
+    <h4>5 Data Teratas:</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                {% for column in top_data[0].keys() %}
+                <th>{{ column }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in top_data %}
+            <tr>
+                {% for value in row.values() %}
+                <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4>5 Data Terbawah:</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                {% for column in bottom_data[0].keys() %}
+                <th>{{ column }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in bottom_data %}
+            <tr>
+                {% for value in row.values() %}
+                <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <label>*Menampilkan 5 baris data teratas dan 5 baris data terbawah</label>
+
+    <form action="/prepro" method="post" class="mt-3">
+        <input type="hidden" name="file_name" value="{{ file_name }}">
+        <button type="submit" class="btn btn-success">Lanjut ke Preprocessing</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

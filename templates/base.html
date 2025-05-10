@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediksi Harga Saham</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+        }
+        .sidebar {
+            min-height: 100vh;
+            width: 250px; /* Lebar sidebar */
+            background-color: #343a40; /* Warna latar belakang sidebar */
+            padding: 20px; /* Jarak dalam sidebar */
+        }
+        .sidebar h1 {
+            color: white; /* Warna teks */
+            font-size: 1.5rem; /* Ukuran font untuk judul */
+            font-weight: bold; /* Membuat teks lebih tebal */
+            margin-bottom: 20px; /* Jarak bawah judul */
+        }
+        .sidebar a {
+            color: white; /* Warna tautan */
+            text-decoration: none; /* Hilangkan garis bawah */
+            padding: 10px; /* Jarak dalam tautan */
+            border-radius: 5px; /* Sudut membulat */
+        }
+        .sidebar a:hover {
+            background-color: #495057; /* Warna saat hover */
+        }
+        .sidebar a.active {
+            background-color: #007bff; /* Warna latar belakang untuk menu aktif */
+            font-weight: bold; /* Menebalkan teks untuk menu aktif */
+        }
+        .content {
+            flex: 1;
+            padding: 20px; /* Jarak konten dari tepi */
+        }
+        .important-note {
+            background-color: yellow;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    {% if not request.path.startswith('/glosarium') %}
+    <div class="sidebar">
+        <a href="/" class="navbar-brand"><h1>Prediksi Saham</h1></a>
+        <nav class="nav flex-column">
+            <a class="nav-link {% if current_page == 'upload' %}active{% endif %}" href="/upload">Upload File</a>
+            <a class="nav-link {% if current_page == 'prepro' %}active{% endif %}" href="/prepro">Data Preprocessing</a>
+            <a class="nav-link {% if current_page == 'return' %}active{% endif %}" href="/return">Perhitungan Return</a>
+            <a class="nav-link {% if current_page == 'stasioneritas' %}active{% endif %}" href="/stasioneritas">Uji Stasioneritas</a>
+            <a class="nav-link {% if current_page == 'split_data' %}active{% endif %}" href="/split_data">Splitting Data</a>
+            <a class="nav-link {% if current_page == 'model_ar' %}active{% endif %}" href="/model_ar">Model AR</a>
+            <a class="nav-link {% if current_page == 'asumsi_ar' %}active{% endif %}" href="/asumsi_ar">Uji Asumsi Residual AR</a>
+            <a class="nav-link {% if current_page == 'linearitas' %}active{% endif %}" href="/linearitas">Uji Linearitas</a>
+            <a class="nav-link {% if current_page == 'fungsi_transisi' %}active{% endif %}" href="/fungsi_transisi">Uji Fungsi Transisi</a>
+            <a class="nav-link {% if current_page == 'estimasi_dan_asumsi_estar' %}active{% endif %}" href="/estimasi_dan_asumsi_estar">Estimasi dan Uji Asumsi Residual ESTAR</a>
+            <a class="nav-link {% if current_page == 'prediksi_estar' %}active{% endif %}" href="/prediksi_estar">Prediksi ESTAR</a>
+            <a class="nav-link {% if current_page == 'mape_model' %}active{% endif %}" href="/mape_model">Evaluasi MAPE Model ESTAR</a>
+            <a class="nav-link {% if current_page == 'prediksi_estar_utk_var' %}active{% endif %}" href="/prediksi_estar_utk_var">Prediksi ESTAR Lanjutan</a>
+            <a class="nav-link {% if current_page == 'var' %}active{% endif %}" href="/var">VaR</a>
+            <a class="nav-link {% if current_page == 'interpretasi' %}active{% endif %}" href="/interpretasi">Interpretasi</a>
+        </nav>
+    </div>
+    {% endif %}
+    
+    <div class="content">
+        <div class="container mt-4">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

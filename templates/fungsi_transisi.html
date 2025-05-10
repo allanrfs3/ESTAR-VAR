@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>🔍 Uji Fungsi Transisi STAR</h2>
+
+    <!-- Penjelasan Umum tentang Uji Fungsi Transisi -->
+    <div class="mb-4">
+        <p><strong>Uji fungsi transisi</strong> digunakan untuk menentukan model nonlinier yang paling sesuai diantara model ESTAR (Exponential Smooth Transition Autoregressive) maupun LSTAR (Logistic Smooth Transition Autoregressive).</p>
+        <p>Ketentuan hipotesis pemilihan model berdasarkan nilai koefisien:</p>
+        <ul>
+            <li>Jika β3 ≠ 0, maka model yang paling sesuai adalah LSTAR.</li>
+            <li>Jika β3 = 0, tetapi β2 ≠ 0, maka model yang paling sesuai adalah ESTAR.</li>
+            <li>Jika β3 = 0 dan β2 = 0, tetapi β1 ≠ 0, maka model yang sesuai adalah LSTAR.</li>
+            <li>Jika β1 = 0, maka model yang sesuai adalah ESTAR.</li>
+        </ul>
+        <p>Statistik uji, seperti T-Statistic dan P-Value, digunakan untuk mengevaluasi hipotesis. Nilai T-Statistic yang signifikan dan P-Value yang rendah menunjukkan bahwa model nonlinier mungkin lebih cocok untuk data.</p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    {% if summary_aux %}
+    <h3 class="mt-4">Hasil Regresi Bantu OLS</h3>
+    <div class="table-responsive">
+        <div class="card mb-4">
+            <div class="card-body">
+                {{ summary_aux|safe }}
+            </div>
+        </div>
+    </div>
+    <hr class="my-4" />
+    {% endif %}
+
+    {% if t_stat_1 is not none and t_stat_2 is not none and t_stat_3 is not none %}
+    <h3 class="mt-4">Hasil Uji T-Statistic</h3>
+    <label>Nilai kritis t adalah {{ t_critical }}</label>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Hipotesis</th>
+                    <th>|t-Hitung|</th>
+                    <th>Keputusan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>H03: β3 = 0</td>
+                    <td>{{ t_stat_3|round(4) }}</td>
+                    <td>{{ keputusan_t["H03"] }}</td>
+                </tr>
+                <tr>
+                    <td>H02: β2 = 0 | β3 = 0</td>
+                    <td>{{ t_stat_2|round(4) }}</td>
+                    <td>{{ keputusan_t["H02"] }}</td>
+                </tr>
+                <tr>
+                    <td>H01: β1 = 0 | β2 = β3 = 0</td>
+                    <td>{{ t_stat_1|round(4) }}</td>
+                    <td>{{ keputusan_t["H01"] }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr class="my-4" />
+    {% endif %}
+
+    {% if p_value_1 is not none and p_value_2 is not none and p_value_3 is not none %}
+    <h3 class="mt-4">Hasil Uji P-Value</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Hipotesis</th>
+                    <th>P-Value</th>
+                    <th>Keputusan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>H03: β3 = 0</td>
+                    <td>{{ p_value_3|round(4) }}</td>
+                    <td>{{ keputusan_p["H03"] }}</td>
+                </tr>
+                <tr>
+                    <td>H02: β2 = 0 | β3 = 0</td>
+                    <td>{{ p_value_2|round(4) }}</td>
+                    <td>{{ keputusan_p["H02"] }}</td>
+                </tr>
+                <tr>
+                    <td>H01: β1 = 0 | β2 = β3 = 0</td>
+                    <td>{{ p_value_1|round(4) }}</td>
+                    <td>{{ keputusan_p["H01"] }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr class="my-4" />
+    {% endif %}
+
+    {% if model_selected %}
+    <h3 class="mt-4">Kesimpulan Pemilihan Model</h3>
+    <p><strong>{{ model_selected }}</strong></p>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{{ url_for('estimasi_dan_asumsi_estar') }}" class="btn btn-primary">Lanjut estimasi dan asumsi model ESTAR</a>
+    </div>
+
+</div>
+{% endblock %}

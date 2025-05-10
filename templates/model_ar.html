@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-center">Pemodelan Autoregressive (AR)</h2>
+
+        <!-- Tampilkan error jika ada -->
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        <!-- Tampilkan Model AR terbaik -->
+        {% if best_p and best_aic %}
+            <h3 class="mt-4">Model AR Terbaik</h3>
+            <p>Order AR terbaik: <strong>AR({{ best_p }})</strong></p>
+            <p>Nilai AIC: <strong>{{ best_aic }}</strong></p>
+        {% endif %}
+
+        <!-- Tampilkan Gambar ACF & PACF -->
+        {% if acf_pacf_image %}
+            <h3 class="mt-4">Visualisasi ACF & PACF</h3>
+            <img src="{{ acf_pacf_image }}" alt="ACF & PACF Plot" class="img-fluid rounded" style="margin: 20px 0;">
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                Gambar ACF & PACF belum tersedia.
+            </div>
+        {% endif %}
+
+        <!-- Interpretasi ACF dan PACF -->
+        {% if acf_pacf_image %}
+            <h3 class="mt-4">Interpretasi Visualisasi ACF dan PACF</h3>
+            <p>
+                Visualisasi ACF (Autocorrelation Function) dan PACF (Partial Autocorrelation Function) memberikan wawasan tentang pola temporal dalam data yang dianalisis. 
+            </p>
+            <ol>
+                <li><strong>ACF:</strong> Mengukur seberapa besar nilai saat ini terkait dengan nilai-nilai sebelumnya. Jika ACF menunjukkan nilai signifikan pada lag-lag awal dan cepat menurun, ini menunjukkan pola yang dapat diprediksi dalam data.</li>
+                <li><strong>PACF:</strong> Mengukur hubungan antara nilai saat ini dan nilai-nilai sebelumnya dengan menghilangkan pengaruh nilai-nilai di antara mereka. Jika PACF menunjukkan spike pada lag pertama dan menurun dengan cepat, ini dapat menunjukkan kesesuaian model autoregressive sederhana.</li>
+                <li><strong>Relevansi:</strong> Analisis ACF dan PACF penting dalam pemodelan deret waktu, seperti ARIMA, untuk menentukan order model yang tepat dan memahami dinamika data.</li>
+                <li><strong>Kesimpulan Umum:</strong> Visualisasi ini membantu analis dalam memilih model yang tepat, yang dapat meningkatkan akurasi peramalan dan pengambilan keputusan.</li>
+            </ol>
+        {% endif %}
+
+        <!-- Tampilkan hasil ACF & PACF dalam tabel -->
+        {% if acf_dict and pacf_dict %}
+            <h3 class="mt-4">Autocorrelation Function (ACF)</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Lag</th>
+                            <th>ACF Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lag, value in acf_dict.items() %}
+                            <tr>
+                                <td>{{ lag }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="mt-4">Partial Autocorrelation Function (PACF)</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Lag</th>
+                            <th>PACF Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lag, value in pacf_dict.items() %}
+                            <tr>
+                                <td>{{ lag }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <form action="/asumsi_ar" method="post">
+                    <input type="hidden" name="file_name" value="{{ file_name }}">
+                    <button type="submit" class="btn btn-success mt-3">Lanjut uji asumsi model AR</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-center">Model AR dan Uji Asumsi Klasik</h2>
+
+        <!-- Form Input untuk Nilai p -->
+        <form method="POST" class="mb-4">
+            <div class="mb-3">
+                <label for="p" class="form-label">Masukkan nilai p untuk model AR(p):</label>
+                <input type="number" name="p" id="p" class="form-control" min="1" max="10" required value="{{ p if p else '' }}">
+                <small class="form-text text-muted">
+                    Nilai p menunjukkan jumlah lag yang digunakan dalam model AR. 
+                    Analisis ACF dan PACF dapat membantu menentukan nilai yang tepat.
+                </small>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <!-- Tampilkan error jika ada -->
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        <!-- Ringkasan Model ARIMA -->
+        {% if arima_summary %}
+        <h3>Ringkasan Model ARIMA</h3>
+        <div class="table-responsive">
+            <pre>{{ arima_summary }}</pre>
+        </div>
+        {% endif %}
+
+        <!-- Hasil Uji Asumsi Klasik -->
+        {% if p %}
+            <h3 class="mt-4">Model AR({{ p }})</h3>
+
+            <!-- Uji Normalitas Residual -->
+            {% if ks_statistic is not none %}
+                <h3>Uji Normalitas Residual (Kolmogorov-Smirnov Test)</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Statistik KS (D)</th>
+                                <th>p-value</th>
+                                <th>Nilai Kritis W(1-α),n</th>
+                                <th>Kesimpulan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ ks_statistic | round(4) }}</td>
+                                <td>{{ ks_pvalue | round(4) }}</td>
+                                <td>{{ W_critical | round(4) }}</td>
+                                <td>
+                                    {% if ks_statistic < W_critical or ks_pvalue > 0.05 %}
+                                        ✅ Residual berdistribusi normal.
+                                    {% else %}
+                                        ❌ Residual tidak berdistribusi normal.
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            <!-- Uji Autokorelasi Residual -->
+            {% if dw_stat is not none %}
+                <h3>Uji Autokorelasi Residual (Durbin-Watson Test)</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Durbin-Watson Statistik</th>
+                                <th>Rentang Kritis</th>
+                                <th>Kesimpulan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ dw_stat | round(4) }}</td>
+                                <td>[{{ dw_lower }}, {{ dw_upper }}]</td>
+                                <td>
+                                    {% if dw_lower < dw_stat < dw_upper %}
+                                        ✅ Tidak ada autokorelasi signifikan.
+                                    {% else %}
+                                        ❌ Terdapat autokorelasi dalam residual.
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            <!-- Uji Homoskedastisitas Residual -->
+            {% if lm_stat is not none %}
+                <h3>Uji Homoskedastisitas Residual (ARCH LM Test)</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Statistik LM</th>
+                                <th>p-value</th>
+                                <th>T-Critical (α=0.05)</th>
+                                <th>Kesimpulan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ lm_stat | round(4) }}</td>
+                                <td>{{ lm_pvalue | round(4) }}</td>
+                                <td>{{ t_critical_arch | round(4) }}</td>
+                                <td>
+                                    {% if lm_pvalue > 0.05 %}
+                                        ✅ Residual memiliki varians yang homogen (homoskedastisitas).
+                                    {% else %}
+                                        ❌ Residual memiliki varians yang tidak homogen (heteroskedastisitas).
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            <!-- Penjelasan Umum tentang Asumsi -->
+            <div class="mb-4">
+                <h3>Penjelasan Umum tentang Uji Asumsi</h3>
+                <p><strong>1. Normalitas:</strong> Asumsi ini merujuk pada anggapan bahwa residual (selisih antara nilai yang diamati dan nilai yang diprediksi) dari model regresi atau deret waktu mengikuti distribusi normal. Hal ini penting untuk validitas inferensi statistik dan memastikan model yang akurat.</p>
+                <p><strong>2. Homoskedastisitas:</strong> Homoskedastisitas adalah asumsi bahwa varians residual adalah konstan di seluruh rentang nilai prediktor. Varians yang konstan menunjukkan bahwa estimasi koefisien regresi adalah efisien dan uji statistik yang digunakan menjadi lebih valid.</p>
+                <p><strong>3. Non-Autokorelasi:</strong> Asumsi ini menyatakan bahwa residual dari model tidak memiliki autocorrelation, yaitu tidak ada hubungan antara residual pada waktu yang berbeda. Residual yang tidak terautokorelasi menunjukkan independensi dan meningkatkan akurasi model.</p>
+            </div>
+
+            <form action="/linearitas" method="post">
+                <input type="hidden" name="file_name" value="{{ file_name }}">
+                <button type="submit" class="btn btn-success mt-3">Lanjut uji linearitas model AR</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

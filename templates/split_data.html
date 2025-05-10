@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-center">Split Data In-Sample & Out-Sample</h2>
+
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" class="mt-4">
+            <div class="mb-3">
+                <label for="in_sample_start" class="form-label">In-Sample Start:</label>
+                <input type="date" id="in_sample_start" name="in_sample_start" class="form-control" required>
+                <small class="form-text text-muted">Masukkan tanggal awal untuk data in-sample.</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="in_sample_end" class="form-label">In-Sample End:</label>
+                <input type="date" id="in_sample_end" name="in_sample_end" class="form-control" required>
+                <small class="form-text text-muted">Masukkan tanggal akhir untuk data in-sample.</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="out_sample_start" class="form-label">Out-Sample Start:</label>
+                <input type="date" id="out_sample_start" name="out_sample_start" class="form-control" required>
+                <small class="form-text text-muted">Masukkan tanggal awal untuk data out-sample.</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="out_sample_end" class="form-label">Out-Sample End:</label>
+                <input type="date" id="out_sample_end" name="out_sample_end" class="form-control" required>
+                <small class="form-text text-muted">Masukkan tanggal akhir untuk data out-sample.</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Split Data</button>
+        </form>
+
+        {% if in_sample_shape and out_sample_shape %}
+            <h3 class="mt-4">Hasil Split:</h3>
+            <p>In-Sample Data: <strong>{{ in_sample_shape[0] }}</strong> baris</p>
+            <p>Out-Sample Data: <strong>{{ out_sample_shape[0] }}</strong> baris</p>
+
+            <h3 class="mt-4">5 Baris Pertama - In-Sample Data</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            {% for col in in_sample_head[0].keys() %}
+                                <th>{{ col }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in in_sample_head %}
+                            <tr>
+                                {% for value in row.values() %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="mt-4">5 Baris Terakhir - In-Sample Data</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            {% for col in in_sample_tail[0].keys() %}
+                                <th>{{ col }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in in_sample_tail %}
+                            <tr>
+                                {% for value in row.values() %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="important-note">
+                            <strong>Penting:</strong> Catat harga paling terakhir atau terkini pada data insample untuk input parameter pada menu prediksi selanjutnya
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <h3 class="mt-4">5 Baris Pertama - Out-Sample Data</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            {% for col in out_sample_head[0].keys() %}
+                                <th>{{ col }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in out_sample_head %}
+                            <tr>
+                                {% for value in row.values() %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <h3 class="mt-4">5 Baris Terakhir - Out-Sample Data</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            {% for col in out_sample_tail[0].keys() %}
+                                <th>{{ col }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in out_sample_tail %}
+                            <tr>
+                                {% for value in row.values() %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                
+                <form action="/model_ar" method="post">
+                    <input type="hidden" name="file_name" value="{{ file_name }}">
+                    <button type="submit" class="btn btn-success mt-3">Lanjut identifikasi model AR</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

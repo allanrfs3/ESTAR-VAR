@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-center">Uji Linearitas</h2>
+
+        <!-- Form untuk input nilai p -->
+        <form method="POST" class="mb-4">
+            <div class="mb-3">
+                <label for="p" class="form-label">Masukkan nilai p (1-10):</label>
+                <input type="number" name="p" id="p" class="form-control" min="1" max="10" required>
+                <small class="form-text text-muted">
+                    Nilai p menunjukkan jumlah lag yang digunakan dalam model AR.
+                </small>
+            </div>
+            <button type="submit" class="btn btn-primary">Uji</button>
+        </form>
+
+        <!-- Tampilkan error jika ada -->
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        <!-- 1️⃣ Tampilkan tabel 5 baris pertama -->
+        {% if table_preview %}
+            <h3 class="mt-4">5 Baris Pertama Data</h3>
+            <div class="table-responsive">
+                {{ table_preview|safe }}
+            </div>
+        {% endif %}
+
+        <!-- 2️⃣ Tampilkan hasil OLS Regression -->
+        {% if summary_aux %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="mt-4">Hasil Regresi Bantu OLS (aux_model)</h3>
+                <div class="table-responsive">
+                    <pre>{{ summary_aux|safe }}</pre>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Sekat sebelum hasil uji linearitas -->
+        <hr class="my-4" />
+
+        <!-- 3️⃣ Tampilkan hasil uji linearitas -->
+        {% if LM3 is not none and chi_square_critical is not none %}
+            <h3 class="mt-4">Hasil Uji Linearitas</h3>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <p><strong>Jumlah Observasi (T):</strong> {{ T }}</p>
+                    <p><strong>SSR₀ (Model AR):</strong> {{ SSR_0|round(6) }}</p>
+                    <p><strong>SSR₁ (Regresi Bantu):</strong> {{ SSR_1|round(6) }}</p>               
+                    <p><strong>Statistik LM3:</strong> {{ LM3|round(4) }}</p>
+                    <p><strong>Nilai Kritis Chi-Square (α = 0.05):</strong> {{ chi_square_critical|round(4) }}</p>
+                    <p><strong>P-Value:</strong> {{ p_value|round(4) }}</p>
+
+                    {% if kesimpulan %}
+                        <p><strong>Kesimpulan:</strong> {{ kesimpulan }}</p>
+                    {% endif %}
+                </div>
+            </div>                    
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>Penjelasan Umum untuk Hipotesis</h3>
+                    <ul>
+                        <li><strong>Hipotesis nol (H0)</strong>: model linier</li>
+                        <li><strong>Hipotesis alternatif (H1)</strong>: model nonlinier</li>
+                    </ul>
+                    <p><strong>Nilai Statistika LM3:</strong> Tolak H0 jika nilai LM3 lebih besar dari nilai kritis χ² dengan derajat kebebasan 3(p+1). Ini menunjukkan bahwa ada bukti signifikan untuk menolak H0.</p>
+                    <p><strong>P-Value:</strong> Tolak H0 jika p-value kurang dari 0,05. P-value yang rendah menunjukkan bahwa hasil yang diperoleh sangat tidak mungkin terjadi jika H0 benar.</p>
+                    <p><strong>Kesimpulan:</strong> Jika salah satu dari dua kriteria di atas terpenuhi, Anda dapat menyimpulkan bahwa ada cukup bukti untuk menolak hipotesis nol.</p> 
+                </div>
+            </div>
+
+            <form action="/fungsi_transisi" method="post">
+                <input type="hidden" name="file_name" value="{{ file_name }}">
+                <button type="submit" class="btn btn-success mt-3">Lanjut uji fungsi transisi STAR</button>
+            </form>
+
+        {% endif %}
+        
+    </div>
+{% endblock %}

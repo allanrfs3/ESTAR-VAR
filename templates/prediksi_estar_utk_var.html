@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Prediksi Harga Saham dengan Model ESTAR</h2>
+
+    <!-- Input untuk prediksi -->
+    <form method="POST" class="mb-4">
+        <div class="mb-3">
+            <label for="p" class="form-label">Masukkan nilai p:</label>
+            <input type="number" id="p" name="p" class="form-control" required>
+            <small class="form-text text-muted">
+                Nilai p menunjukkan jumlah lag yang digunakan dalam model AR.
+            </small>
+        </div>
+
+        <div class="mb-3">
+            <label for="d" class="form-label">Masukkan nilai d:</label>
+            <input type="number" id="d" name="d" class="form-control" required>
+            <small class="form-text text-muted">
+                Nilai d menunjukkan jumlah delay yang digunakan untuk variabel transisi model STAR dengan 1 ≤ d ≤ p.
+            </small>
+        </div>
+
+        <div class="mb-3">
+            <label for="steps" class="form-label">Jumlah Hari Yang Ingin Diprediksi (steps):</label>
+            <input type="number" id="steps" name="steps" class="form-control" required>
+            <small class="form-text text-muted">
+                Jumlah yang diinput adalah hari yang ingin diprediksi. 
+                Contoh: jika jumlah data outsample sebelumnya 43 dan Anda ingin memprediksi 3 hari, cukup masukkan 3.
+            </small>
+        </div>
+
+        <div class="mb-3">
+            <label for="outsample_count" class="form-label">Jumlah Data Out-of-Sample:</label>
+            <input type="number" id="outsample_count" name="outsample_count" class="form-control" required>
+            <small class="form-text text-muted">
+                Jumlah data outsample pada saat splitting data.
+            </small>
+        </div>
+
+        <div class="mb-3">
+            <label for="last_price" class="form-label">Harga Saham Terakhir:</label>
+            <input type="number" id="last_price" name="last_price" class="form-control" step="any" required>
+            <small class="form-text text-muted">
+                Harga penutupan saham saat ini atau terakhir.
+            </small>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Hitung Prediksi</button>
+    </form>
+
+    {% if remaining_returns is not none %}
+        <h4>Hasil Data Prediksi Sesuai Kebutuhan:</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Langkah (Step)</th>
+                    <th>Prediksi Return</th>
+                    <th>Harga Penutupan yang Diprediksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for step in range(remaining_returns|length) %}
+                    <tr>
+                        <td>{{ step + 1 }}</td>
+                        <td>{{ remaining_returns[step] }}</td>
+                        <td>{{ remaining_prices[step] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="mt-4">
+            <h4>Visualisasi Perbandingan Harga Aktual vs Prediksi:</h4>
+            <img src="{{ url_for('static', filename='actual_vs_predicted_var.png') }}" alt="Harga Aktual vs Prediksi" class="img-fluid">
+        </div>
+
+        <div class="mt-4">
+            <h4>Visualisasi Prediksi Harga Saham:</h4>
+            <img src="{{ url_for('static', filename='forecast_prices_var.png') }}" alt="Prediksi Harga Saham" class="img-fluid">
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ url_for('var') }}" class="btn btn-primary">Lanjut pengukuran risiko VaR</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

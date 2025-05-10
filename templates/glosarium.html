@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center text-dark mb-4">Ringkasan Metode dan Tahapan Analisis</h2>
+
+    <div class="mt-4">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Upload File</h4>
+                <p>Pada tahap ini, pengguna diharuskan untuk mengunggah file CSV yang berisi data yang akan dianalisis. 
+                    File ini biasanya berisi informasi historis yang relevan, seperti harga saham, volume perdagangan, 
+                    atau data keuangan lainnya yang diperlukan untuk analisis lebih lanjut.</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Data Preprocessing</h4>
+                <p>Setelah file diunggah, langkah berikutnya adalah memproses data. Proses ini mencakup pembersihan data 
+                    dari nilai yang hilang atau outlier, serta transformasi data untuk memastikan bahwa data siap digunakan 
+                    dalam model analisis. Data yang telah diproses akan lebih akurat dan relevan untuk analisis yang akan dilakukan.</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Perhitungan (Return)</h4>
+                <p>Analisis berfokus pada menghitung pengembalian (return) dari data yang telah diolah. 
+                    Pengembalian merupakan indikator penting dalam analisis keuangan yang menunjukkan seberapa baik investasi telah 
+                    dilakukan selama periode tertentu. Pengembalian dapat dihitung berdasarkan perubahan harga dari waktu ke waktu.</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Splitting Data</h4>
+                <p>Setelah pengembalian dihitung, data akan dibagi menjadi dua set: data pelatihan dan data pengujian. 
+                    Pembagian ini penting untuk memastikan bahwa model yang dibangun dapat diuji dan diverifikasi dengan data yang 
+                    tidak terlihat sebelumnya, sehingga meningkatkan keandalannya dalam prediksi.</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Model Autoregressive (AR)</h4>
+                <p>Pada tahap ini, model Autoregressive (AR) digunakan untuk menganalisis data pengembalian. 
+                    Model ini membantu dalam memahami pola dan hubungan dalam data historis, yang penting untuk peramalan 
+                    ke depan. Model AR berfungsi untuk memprediksi nilai masa depan berdasarkan nilai masa lalu.</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Estimasi dan Uji Asumsi Residual AR</h4>
+                <p>Setelah model AR diterapkan, langkah selanjutnya adalah menguji asumsi residual dari model. 
+                    Ini mencakup analisis untuk memastikan bahwa residual (selisih antara nilai yang diprediksi dan 
+                    nilai aktual) tidak menunjukkan pola tertentu dan bersifat acak, yang menandakan bahwa model telah dioptimalkan dengan baik.</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Uji Linearitas</h4>
+                <p>Uji linearitas dilakukan untuk memeriksa apakah hubungan antara variabel independen dan dependen dalam model adalah linear. 
+                    Ini penting karena banyak model statistik, termasuk model AR dan ESTAR, mengasumsikan bahwa hubungan ini bersifat linear. 
+                    Dengan melakukan uji linearitas, kita dapat memastikan bahwa model yang digunakan akan memberikan hasil yang akurat dan valid. 
+                    Jika hubungan tidak linear, mungkin diperlukan transformasi data atau pemilihan model yang lebih sesuai.</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Uji Fungsi Transisi</h4>
+                <p>Uji fungsi transisi digunakan untuk mengidentifikasi apakah ada perubahan dalam perilaku data pada titik-titik tertentu. 
+                    Dalam konteks model ESTAR, uji ini membantu dalam menentukan apakah terdapat perubahan regime atau fase yang mempengaruhi hubungan antara variabel. 
+                    Dengan memahami fungsi transisi, analisis dapat memberikan wawasan tentang bagaimana hubungan antar variabel berubah seiring waktu, yang penting untuk 
+                    peramalan yang lebih akurat.</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Prediksi ESTAR</h4>
+                <p>Dengan model yang telah memenuhi asumsi, langkah berikutnya adalah melakukan prediksi menggunakan model ESTAR (Exponential Smooth Transition Autoregressive). 
+                    Model ini lebih kompleks dan dapat menangkap dinamika yang lebih dalam dalam data. 
+                    Prediksi dari model ini akan memberikan wawasan tentang tren masa depan berdasarkan data historis.</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Evaluasi Model MAPE ESTAR</h4>
+                <p>Setelah prediksi dilakukan, tahap evaluasi model dilakukan dengan menggunakan Mean Absolute Percentage Error (MAPE). 
+                    MAPE mengukur seberapa akurat prediksi model dibandingkan dengan nilai aktual. 
+                    Ini adalah metrik penting untuk menilai performa model dan melakukan perbaikan jika diperlukan.</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Prediksi ESTAR Lanjutan</h4>
+                <p>Akhirnya, setelah evaluasi, prediksi lanjutan dapat dilakukan untuk mendapatkan hasil yang lebih akurat dan dapat diandalkan. 
+                    Tahap ini mencakup iterasi dan penyempurnaan model berdasarkan hasil evaluasi sebelumnya, untuk memastikan bahwa model memberikan 
+                    hasil terbaik untuk pengambilan keputusan.</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Value at Risk (VaR)</h4>
+                <p>Value at Risk (VaR) digunakan untuk mengukur risiko kerugian maksimum 
+                    yang mungkin terjadi pada saham tertentu dalam jangka waktu tertentu, dengan tingkat kepercayaan yang ditentukan. 
+                    Misalnya, jika VaR suatu saham adalah Rp500 dalam periode satu hari dengan tingkat kepercayaan 95%, maka ada 
+                    95% kemungkinan bahwa kerugian tidak akan melebihi Rp500 dalam satu hari.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('home') }}" class="btn btn-primary">Kembali ke Beranda</a>
+    </div>
+</div>
+{% endblock %}

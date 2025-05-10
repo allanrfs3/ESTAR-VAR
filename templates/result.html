@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hasil Analisis</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark p-3">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">Stock Prediction</a>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="text-center fw-bold">Hasil Analisis Data Saham</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card p-3 shadow">
+                <h5 class="fw-bold">Grafik Harga Saham</h5>
+                <img src="{{ price_plot_url }}" class="img-fluid rounded">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card p-3 shadow">
+                <h5 class="fw-bold">Grafik Return</h5>
+                <img src="{{ return_plot_url }}" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h4 class="fw-bold">Uji Stasioneritas (ADF Test)</h4>
+        <div class="table-responsive">
+            {{ adf_results | safe }}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h4 class="fw-bold">Uji Normalitas (Jarque-Bera)</h4>
+        <p>Statistik: <b>{{ jb_stat }}</b></p>
+        <p>P-value: <b>{{ jb_p_value }}</b></p>
+        <p><b>{{ jb_normality }}</b></p>
+    </div>
+
+    <div class="mt-4">
+        <h4 class="fw-bold">Pembagian Data</h4>
+        <p>In-sample: <b>{{ in_sample_shape }}</b> data</p>
+        <p>Out-sample: <b>{{ out_sample_shape }}</b> data</p>
+    </div>
+    
+    <a href="/" class="btn btn-dark mt-3">Kembali ke Home</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Perhitungan Value at Risk (VaR)</h2>
+
+    <form method="POST" class="mb-4">
+        <div class="mb-3">
+            <label for="initial_investment" class="form-label">Investasi Awal:</label>
+            <input type="number" id="initial_investment" name="initial_investment" class="form-control" step="any" required>
+            <small class="form-text text-muted">Masukkan jumlah uang yang akan diinvestasikan.</small>
+        </div>
+
+        <div class="mb-3">
+            <label for="holding_period" class="form-label">Jumlah Hari Holding Period:</label>
+            <input type="number" id="holding_period" name="holding_period" class="form-control" required>
+            <small class="form-text text-muted">Durasi waktu (dalam hari) untuk mempertahankan investasi.</small>
+        </div>
+
+        <div class="mb-3">
+            <label for="confidence_level" class="form-label">Tingkat Kepercayaan (%):</label>
+            <input type="number" id="confidence_level" name="confidence_level" class="form-control" step="any" min="0" max="100" required>
+            <small class="form-text text-muted">Persentase keyakinan untuk memperkirakan potensi kerugian maksimum.</small>
+        </div>
+
+        <div class="mb-3">
+            <label for="source" class="form-label">Sumber Data:</label>
+            <select id="source" name="source" class="form-select" required>
+                <option value="prediksi_estar">Hasil Prediksi ESTAR</option>
+                <option value="prediksi_var">Hasil Prediksi ESTAR Lanjutan</option>
+            </select>
+            <small class="form-text text-muted">Pilih metode data yang digunakan untuk analisis.</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Hitung VaR</button>
+    </form>
+
+    {% if var_result %}
+        <h4 class="text-center">Hasil Perhitungan VaR:</h4>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Detail Hasil:</h5>
+                <p class="card-text"><strong>P_alpha (Persentil Return):</strong> {{ var_result.p_alpha }}</p>
+                <p class="card-text"><strong>VaR Holding ({{ var_result.holding_period }} hari) dengan tingkat kepercayaan {{ var_result.confidence_level }}%:</strong> Rp{{ var_result.var_holding }}</p>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <a href="{{ url_for('interpretasi') }}" class="btn btn-primary">Lanjut ke Interpretasi</a>
+        </div>
+        
+    {% endif %}
+</div>
+{% endblock %}

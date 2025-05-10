@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">Interpretasi Hasil</h1>
+
+    <div class="text-center mb-4" style="margin-top: 20px;">
+        {% if recommendation == "Strong Buy" %}
+            <div class="alert alert-success" role="alert" style="font-size: 1.5rem;">
+                <strong>Rekomendasi:</strong> {{ recommendation }}
+            </div>
+        {% elif recommendation == "Buy" %}
+            <div class="alert alert-info" role="alert" style="font-size: 1.5rem;">
+                <strong>Rekomendasi:</strong> {{ recommendation }}
+            </div>
+        {% elif recommendation == "Hold" %}
+            <div class="alert alert-warning" role="alert" style="font-size: 1.5rem;">
+                <strong>Rekomendasi:</strong> {{ recommendation }}
+            </div>
+        {% elif recommendation == "Sell" %}
+            <div class="alert alert-danger" role="alert" style="font-size: 1.5rem;">
+                <strong>Rekomendasi:</strong> {{ recommendation }}
+            </div>
+        {% elif recommendation == "Strong Sell" %}
+            <div class="alert alert-dark" role="alert" style="font-size: 1.5rem;">
+                <strong>Rekomendasi:</strong> {{ recommendation }}
+            </div>
+        {% else %}
+            <div class="alert alert-secondary" role="alert" style="font-size: 1.5rem;">
+                <strong>Rekomendasi:</strong> Tidak ada data untuk rekomendasi
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Penjelasan Rekomendasi</h5>
+            <p class="card-text">
+                Rekomendasi ditentukan berdasarkan hasil prediksi sebagai berikut:
+            </p>
+            <ul>
+                <li><strong>Strong Buy:</strong> Jika prediksi return lebih dari 10%.</li>
+                <li><strong>Buy:</strong> Jika prediksi return positif tetapi kurang dari atau sama dengan 10%.</li>
+                <li><strong>Hold:</strong> Jika prediksi return sama dengan 0.</li>
+                <li><strong>Sell:</strong> Jika prediksi return negatif tetapi lebih dari -10%.</li>
+                <li><strong>Strong Sell:</strong> Jika prediksi return kurang dari -10%.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Hasil MAPE</h5>
+            <p class="card-text"><strong>MAPE (%):</strong> {{ mape_value }}</p>
+            <p class="card-text">MAPE (Mean Absolute Percentage Error) mengukur akurasi model prediksi. Nilai MAPE yang lebih rendah menunjukkan model yang lebih baik.</p>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Hasil Value at Risk (VaR)</h5>
+            <p class="card-text"><strong>VaR Holding ({{ holding_period }} hari):</strong> Rp{{ var_holding }}</p>
+            <p class="card-text"><strong>P_alpha (Persentil Return):</strong> {{ p_alpha }}</p>
+            <p class="card-text"><strong>Tingkat Kepercayaan:</strong> {{ confidence_level }}%</p>
+            <p class="card-text">VaR memberikan estimasi kerugian maksimum yang mungkin terjadi dalam periode holding tertentu dengan tingkat kepercayaan yang ditentukan. Nilai VaR yang lebih rendah menunjukkan risiko yang lebih rendah.</p>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Data Prediksi ESTAR</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Step</th>
+                        <th>Prediksi Return</th>
+                        <th>Prediksi Harga Penutupan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in forecast_data_estar %}
+                    <tr>
+                        <td>{{ item['Step'] }}</td>
+                        <td>{{ item['Forecast_Return'] }}</td>
+                        <td>{{ item['Forecast_Close_Price'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Data Prediksi ESTAR Lanjutan</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Step</th>
+                        <th>Prediksi Return</th>
+                        <th>Prediksi Harga Penutupan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in forecast_data_new %}
+                    <tr>
+                        <td>{{ item['Step'] }}</td>
+                        <td>{{ item['Forecast_Return'] }}</td>
+                        <td>{{ item['Forecast_Close_Price'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <a href="{{ url_for('home') }}" class="btn btn-primary">Kembali ke Beranda</a>
+    </div>
+</div>
+{% endblock %}

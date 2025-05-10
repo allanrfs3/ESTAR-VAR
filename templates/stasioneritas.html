@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-center">Hasil Uji Stasioneritas (ADF Test)</h2>
+
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> {{ error }}
+            </div>
+        {% elif adf_output %}
+            <div class="card mt-3">
+                <div class="card-body">
+                    <pre>
+    Test Statistic: {{ adf_output['Test Statistic'] }}
+    p-value: {{ adf_output['p-value'] }}
+    #Lags Used: {{ adf_output['#Lags Used'] }}
+    Number of Observations Used: {{ adf_output['Number of Observations Used'] }}
+    Critical Value (1%): {{ adf_output['Critical Value (1%)'] }}
+    Critical Value (5%): {{ adf_output['Critical Value (5%)'] }}
+    Critical Value (10%): {{ adf_output['Critical Value (10%)'] }}
+                    </pre>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5>Interpretasi Hasil Uji Stasioneritas:</h5>
+                    <p>
+                        Uji ADF (Augmented Dickey-Fuller) digunakan untuk menguji apakah suatu deret waktu 
+                        stasioner. Berikut adalah panduan untuk menafsirkan hasil:
+                    </p>
+                    <ul>
+                        <li><strong>Hipotesis nol (H0)</strong>: Data tidak stasioner (mengandung unit root).</li>
+                        <li><strong>Hipotesis alternatif (H1)</strong>: Data stasioner (tidak mengandung unit root).</li>
+                    </ul>
+                    <p>
+                        - Jika <strong>p-value</strong> lebih besar dari 0.05, kita gagal menolak hipotesis nol, 
+                        yang berarti data tidak stasioner.
+                        <br>
+                        - Jika <strong>p-value</strong> kurang dari 0.05, kita menolak hipotesis nol, 
+                        yang menunjukkan data stasioner.
+                    </p>
+                    <p>
+                        Selain itu, bandingkan <strong>Test Statistic</strong> dengan <strong>Critical Values</strong>: 
+                        jika Test Statistic lebih kecil dari Critical Value, maka hipotesis nol tidak dapat ditolak 
+                        (data tidak stasioner).
+                    </p>
+                </div>
+            </div>
+        {% else %}
+            <p class="mt-3">Silakan kembali ke langkah return untuk memulai uji stasioneritas.</p>
+        {% endif %}
+
+        <form action="/split_data" method="post">
+            <input type="hidden" name="file_name" value="{{ file_name }}">
+            <button type="submit" class="btn btn-success mt-3">Lanjut melakukan splitting data</button>
+        </form>
+    </div>
+{% endblock %}
